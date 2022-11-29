@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { createUser } from "../../../models/user";
 
 type Data = {
-  name: string
+  message: string
 }
 
 export default function handler(
@@ -12,7 +12,7 @@ export default function handler(
 ) {
   if (req.method !== 'POST') {
     return res.status(405).json({
-      'message': 'Method not allowed'
+        message: 'Method not allowed'
     });
   }
 
@@ -23,5 +23,5 @@ export default function handler(
     password: password
   });
 
-  return res.status(200).json({ name: 'John Doe' });
+  return res.status(200).json({ message: 'John Doe' });
 }
