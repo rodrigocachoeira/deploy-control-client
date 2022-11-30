@@ -1,3 +1,5 @@
 import { getApiClient } from "./axios";
 
-export const api = getApiClient(undefined);
+const INTERNAL_API = 'http://localhost:3000';
+
+export const api = getApiClient(INTERNAL_API, undefined);

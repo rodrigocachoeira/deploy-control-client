@@ -1,16 +1,16 @@
 export type Issue = {
-  number: Number;
-  title: String;
-  type: String;
-  tags: String[];
+  number: number;
+  title: string;
+  type: string;
+  tags: string[];
   author: {
-    email: String;
-    image: String;
+      email: string;
+      image: string;
   };
-  approvesCount: Number;
+  approvesCount: number;
   requestedReviews: {
-    back: Boolean;
-    front: Boolean;
-    infra: Boolean;
+    back: boolean;
+    front: boolean;
+    infra: boolean;
   };
 }
