@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	res.status(200).json({
 		message: 'Successfully Login',
 		token: createJwtToken({
-			id: user.id,
+			id: user.id as number,
 			email: user.email
         })
     })

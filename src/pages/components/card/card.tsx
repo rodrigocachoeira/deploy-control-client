@@ -1,10 +1,10 @@
-import { CheckCircleIcon, BugAntIcon, XCircleIcon, NewspaperIcon } from '@heroicons/react/24/outline'
+import { CheckCircleIcon, BugAntIcon, XCircleIcon, NewspaperIcon } from '@heroicons/react/24/outline';
 
 import { CardProps } from './types';
 
 export function Card(props: CardProps) {
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+	<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
       <div className="relative bg-white py-6 px-6 rounded-3xl w-64 my-4 shadow-xl">
         <div className={'text-white flex items-center absolute rounded-full py-4 px-4 shadow-xl left-4 -top-6 ' + getCardBg(props.type) }>
           {renderCardImage(props.type)}

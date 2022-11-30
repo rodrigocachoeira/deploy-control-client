@@ -3,8 +3,11 @@ import { Card } from './components/card';
 import { CardProps } from "./components/card";
 
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import {useContext} from "react";
-import {AuthContext} from "./contexts/AuthContext";
+import { useContext } from "react";
+import { AuthContext } from "./contexts/AuthContext";
+import { GetServerSideProps } from "next";
+
+import { parseCookies } from 'nookies';
 
 const issues: CardProps[] = [
   {
@@ -48,11 +51,11 @@ const issues: CardProps[] = [
   }
 ];
 
-export default function Home() {
+export default function Dashboard() {
 	const { user } = useContext(AuthContext);
 
   	return (
-	    <div className="min-h-full">
+	    <section className="min-h-full">
 	      <Navbar />
 	      <header className="bg-white shadow">
 	        <div className="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
@@ -72,9 +75,10 @@ export default function Home() {
 	        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
 	          <div className="px-4 py-6 sm:px-0">
 	            <div className="flex items-center justify-center" >
-	              {issues.map(issue => {
+				{issues.map((issue, index) => {
 	                return (
 	                    <Card
+						 key={issue.number}
 	                      number={issue.number}
 	                      type={issue.type}
 	                      title={issue.title}
@@ -89,6 +93,23 @@ export default function Home() {
 	          </div>
 	        </div>
 	      </main>
-	    </div>
+        </section>
   	)
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const { 'deployControlClient.authToken': token } = parseCookies(context);
+
+    if (! token) {
+		return {
+            redirect: {
+                destination: '/login',
+				permanent: false,
+            }
+        };
+    }
+
+	return {
+        props: {}
+    }
+};

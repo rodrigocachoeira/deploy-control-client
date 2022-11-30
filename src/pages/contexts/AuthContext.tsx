@@ -1,11 +1,15 @@
 import {createContext, useEffect, useState} from "react";
-import { setCookie, parseCookies } from "nookies";
+import { parseCookies } from "nookies";
+import { AxiosError } from "axios";
+
 import Router from 'next/router';
 
+import { api } from '../../services/api';
+import { login } from '../../services/auth';
+import { openJwtToken } from "../../lib/jwt";
+
 type User = {
-    name: string;
     email: string;
-    avatarUrl: string;
 };
 
 type SignInData = {
@@ -29,30 +33,42 @@ export function AuthProvider({ children }: any) {
         const { 'deployControlClient.authToken': token } = parseCookies();
 
         if (token) {
-            setUser({
-				name: 'Rodrigo',
-				email: 'rodrigo.cachoeira@atlastechnol.com',
-				avatarUrl: 'helloWorld.png'
-            });
+            const payload = openJwtToken(token);
+
+            if (payload) {
+                setUser({
+					email: payload.email
+				});
+            }
         }
 
     }, []);
 
-    function signIn({email, password}: SignInData) {
-        const token = '123';
+    async function signIn({email, password}: SignInData): Promise<boolean> {
+		const data = await executeLogin(email, password);
 
-		setCookie(undefined, 'deployControlClient.authToken', token, {
-            maxAge: 60 * 60 * 24, // 1 day
-        });
+        if (! data) {
+            return Promise.resolve(false);
+        }
 
-        setUser({
-			name: 'Rodrigo',
-			email: 'rodrigo.cachoeira@atlastechnol.com',
-			avatarUrl: 'helloWorld.png'
-        });
+		const payload = login(data.token, email);
+        setUser(payload);
 
         Router.push('/dashboard');
+
+        return Promise.resolve(true);
 	}
+
+	async function executeLogin(email: string, password: string) {
+        return await api.post('/api/users/login', {
+            email: email,
+			password: password
+        }).then(res => {
+            return res.data;
+        }).catch((err: AxiosError) => {
+            return null;
+        });
+    }
 
   	return (
 		<AuthContext.Provider value={{user, isAuthenticated, signIn}}>

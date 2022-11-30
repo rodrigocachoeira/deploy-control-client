@@ -1,5 +1,5 @@
 export interface CardProps {
-  number: Number;
+  number: number;
   type: 'bug' | 'task';
   title: string;
   tags: string[];
