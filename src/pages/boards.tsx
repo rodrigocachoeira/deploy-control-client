@@ -1,10 +1,15 @@
 import Navbar from './layout/navbar';
 
 import { Heading } from './components/heading';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Board } from "../../types/board";
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
+import { Payload } from '../../types/jwt/payload';
+import { loadJwtTokenInSession } from "../services/auth";
+import { destroy, post } from '../services/http/fetch';
+import { openJwtToken } from "../lib/jwt";
+import { findBoardByUserId } from "../models/board";
 
 const BOARDS = [
     {
@@ -29,9 +34,35 @@ const BOARDS = [
 	},
 ];
 
-export default function Boards() {
+export default function Boards({...data}) {
     const [board, setBoard] = useState("");
     const [boards, setBoards] = useState<Board[]>([]);
+    const [user, setUser] = useState<Payload | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        const payload = loadJwtTokenInSession(undefined);
+
+        setUser({
+			id: payload.id,
+			email: payload.email
+        });
+
+        setBoards(
+			data.boards.map((board: any) => {
+				return {
+                  	id: board.id,
+					data: {
+                          key: board.internal,
+						  value: board.description
+                     },
+					status: board.status,
+					sprint: 0
+                };
+			})
+        )
+
+	}, []);
 
     function handleBoardInput (event: any) {
         setBoard(event.target.value);
@@ -46,6 +77,28 @@ export default function Boards() {
         }
 
         return classes;
+    }
+
+	function updateBoardClasses() {
+        const classes = 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ';
+        const disabledClasses = 'rounded opacity-50 cursor-not-allowed';
+
+        if (loading) {
+            return classes + disabledClasses;
+        }
+
+		return classes;
+    }
+
+	function removeBoardClasses() {
+        const classes = 'bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ';
+        const disabledClasses = 'rounded opacity-50 cursor-not-allowed';
+
+        if (loading) {
+            return classes + disabledClasses;
+        }
+
+		return classes;
     }
 
 	function storeBoard() {
@@ -93,8 +146,54 @@ export default function Boards() {
         setBoards(updatedBoards);
     }
 
-	function updateBoard(e: any, board: Board) {
-        console.log(board);
+	async function removeBoard(e: any, board: Board) {
+        if (! user) {
+            return;
+        }
+
+        setLoading(true);
+
+        await destroy(undefined, '/api/boards/destroy', {
+            id: board.id,
+		});
+
+        const updatedBoards: Board[] = boards.filter((b: Board) => {
+            return b.data.key !== board.data.key;
+        });
+
+        setBoards(updatedBoards);
+        setLoading(false);
+    }
+
+	async function updateBoard(e: any, board: Board) {
+        if (! user) {
+        	return;
+        }
+
+		setLoading(true);
+		const res = await post(undefined, '/api/boards/store', {
+            id: board.id as number,
+			internal: board.data.key,
+			description: board.data.value,
+			status: board.status,
+			userId: user.id,
+        });
+        const { data } = await res.json();
+
+        if (! data.id) {
+			return;
+        }
+
+        const updatedBoards: Board[] = boards.map((board: Board) => {
+            if (board.data.key == data.internal) {
+                board.id = data.id;
+            }
+
+			return board;
+        });
+
+        setBoards(updatedBoards);
+        setLoading(false);
     }
 
     return (
@@ -123,7 +222,7 @@ export default function Boards() {
 											key={board.key}
 											value={board.key}
 										>{ board.value }</option>
-)
+									)
                                     }
 
                                 })}
@@ -176,12 +275,18 @@ export default function Boards() {
                                     </div>
 
 									<div className="flex flex-wrap -mx-3 mb-6 mt-5">
-										<div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+										<div className="w-full md:w-1/2 px-3 mb-6 md:mb-0 grid gap-4 grid-cols-2">
 											<button
 												onClick={(e) => updateBoard(e, board)}
-												className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+												className={updateBoardClasses()}
 											>
-												Update
+												Save
+                                            </button>
+											<button
+												onClick={(e) => removeBoard(e, board)}
+												className={removeBoardClasses()}
+											>
+												Remove
                                             </button>
                                         </div>
                                     </div>
@@ -209,7 +314,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         };
     }
 
+	const payload: any = openJwtToken(token);
+    const boards = await findBoardByUserId(payload.id);
+
 	return {
-        props: {}
+        props: {
+            boards: JSON.parse(JSON.stringify(boards))
+        }
     };
 };

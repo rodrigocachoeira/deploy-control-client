@@ -1,14 +1,13 @@
-import {createContext, useEffect, useState} from "react";
-import { parseCookies } from "nookies";
-import { AxiosError } from "axios";
+import { createContext, useEffect, useState } from "react";
 
 import Router from 'next/router';
+import { post } from '../../services/http/fetch';
 
-import { api } from '../../services/api';
-import { login } from '../../services/auth';
-import { openJwtToken } from "../../lib/jwt";
+import { login, loadJwtTokenInSession } from '../../services/auth';
+import { Payload } from "../../../types/jwt/payload";
 
 type User = {
+    id: number;
     email: string;
 };
 
@@ -26,32 +25,29 @@ type AuthContextType = {
 export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthProvider({ children }: any) {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<Payload | null>(null);
 	const isAuthenticated = !! user;
 
     useEffect(() => {
-        const { 'deployControlClient.authToken': token } = parseCookies();
+        const payload = loadJwtTokenInSession(undefined);
 
-        if (token) {
-            const payload = openJwtToken(token);
-
-            if (payload) {
-                setUser({
-					email: payload.email
-				});
-            }
-        }
+        setUser({
+			id: payload.id,
+			email: payload.email
+        });
 
     }, []);
 
     async function signIn({email, password}: SignInData): Promise<boolean> {
-		const data = await executeLogin(email, password);
+		const res: any = await executeLogin(email, password);
 
-        if (! data) {
+        if (res.status !== 200) {
             return Promise.resolve(false);
         }
 
-		const payload = login(data.token, email);
+		const data = await res.json();
+        const payload: Payload = login(data.token);
+        
         setUser(payload);
 
         Router.push('/dashboard');
@@ -60,13 +56,9 @@ export function AuthProvider({ children }: any) {
 	}
 
 	async function executeLogin(email: string, password: string) {
-        return await api.post('/api/users/login', {
+        return await post(undefined, '/api/users/login', {
             email: email,
 			password: password
-        }).then(res => {
-            return res.data;
-        }).catch((err: AxiosError) => {
-            return null;
         });
     }
 

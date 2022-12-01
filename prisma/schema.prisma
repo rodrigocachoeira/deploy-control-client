@@ -39,8 +39,10 @@ model Sprint {
 }
 
 model Board {
-  id              Int       @id               @default(autoincrement())
-  description     String
+  id             	Int       @id               @default(autoincrement())
+  internal     	    String
+  description      	String
+  status	      	String
 
   user            User      @relation(fields: [userId], references: [id])
   userId          Int

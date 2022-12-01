@@ -20,7 +20,9 @@ CREATE TABLE "sprints" (
 -- CreateTable
 CREATE TABLE "boards" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "internal" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
     "userId" INTEGER NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL,

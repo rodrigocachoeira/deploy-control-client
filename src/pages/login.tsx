@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
-import {useContext, useState} from "react";
+import { useContext, useState } from "react";
 
 import { AuthContext } from "./contexts/AuthContext";
 
 import { Alert } from './components/alert';
-import {GetServerSideProps} from "next";
-import {parseCookies} from "nookies";
+import { GetServerSideProps } from "next";
+import { parseCookies } from "nookies";
 
 export default function Login() {
   const [showError, setShowError] = useState<boolean>(false);

@@ -1,10 +1,24 @@
 import { prisma } from "../lib/prisma";
-import { User } from "../../types/user";
+import { User } from "../../types/models/user";
 
-import {compare, hash} from "bcrypt";
+import { compare, hash } from "bcrypt";
 
 export async function createUser(user: User) {
-  console.log(prisma, user);
+	user.createdAt = new Date();
+    user.updatedAt = new Date();
+    user.password = await cryptPassword(user.password);
+
+  	return await prisma.user.create({
+	  	data: {
+          	... user
+      	}
+  	});
+}
+
+async function cryptPassword(password: string) {
+    const saltRounds = 10;
+
+    return await hash(password, saltRounds);
 }
 
 export async function login({email, password}: User) {
@@ -25,4 +39,12 @@ export async function login({email, password}: User) {
     }
 
 	return null;
+}
+
+export async function findByUserId(userId: number) {
+    return await prisma.user.findFirst({
+		where: {
+            id: userId
+        }
+    });
 }
