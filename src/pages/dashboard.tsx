@@ -1,5 +1,6 @@
 import Navbar from './layout/navbar';
 import { Card } from './components/card';
+import { Heading } from './components/heading';
 
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { GetServerSideProps } from "next";
@@ -14,18 +15,15 @@ export default function Dashboard({... data }) {
 	    <section className="min-h-full">
 	      <Navbar />
 	      <header className="bg-white shadow">
-	        <div className="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
-	          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-	            Sprint 22
-	          </h1>
-	        </div>
+		  	<Heading title="Sprint 22" />
 	       <div className="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8" >
-	         <button className="bg-purple-700 cursor-pointer hover:bg-purple-500 text-green-100 font-bold py-2 px-4 rounded inline-flex items-center">
-	          <ArrowPathIcon className="block h-6 w-6" aria-hidden="true" />&nbsp;
-	          <span>Sync</span>
-	        </button>
-	      </div>
+	         	<button className="bg-purple-700 cursor-pointer hover:bg-purple-500 text-green-100 font-bold py-2 px-4 rounded inline-flex items-center">
+		          	<ArrowPathIcon className="block h-6 w-6" aria-hidden="true" />&nbsp;
+		          	<span>Sync</span>
+	        	</button>
+	      	</div>
 	      </header>
+			<div className="divide-y" ></div>
 	      <main>
 
 	        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">

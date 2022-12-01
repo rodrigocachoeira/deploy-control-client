@@ -1,4 +1,4 @@
-import { setCookie } from "nookies";
+import { destroyCookie, setCookie} from "nookies";
 import { api } from "./api";
 
 export function login(token: string, email: string) {
@@ -11,4 +11,8 @@ export function login(token: string, email: string) {
     return {
 		email: email,
     };
+}
+
+export function logout(context: any) {
+    destroyCookie(context, 'deployControlClient.authToken');
 }
