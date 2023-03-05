@@ -56,15 +56,15 @@ model Board {
 }
 
 model Issue {
-  id                Int       @id               @default(autoincrement())
-  title             String
-  description       String
-  priority          String
-  assigneeName      String
-  assigneemage      String
+  id                 Int       @id               @default(autoincrement())
+  title              String
+  description        String
+  priority           String
+  assigneeName       String
+  assigneeImage      String
 
-  sprint            Sprint      @relation(fields: [sprintId], references: [id])
-  sprintId          Int
+  sprint             Sprint?      @relation(fields: [sprintId], references: [id])
+  sprintId           Int
 
   createdAt         DateTime  @default(now())   @map("created_at")
   updatedAt         DateTime  @updatedAt        @map("updated_at")

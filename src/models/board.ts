@@ -58,3 +58,11 @@ export async function updateBoard(boardId: number, board: Board) {
         }
     });
 }
+
+export async function getBordsOfUser(userId: number) {
+    return await prisma.board.findMany({
+		where: {
+            userId: userId
+        }
+    });
+}

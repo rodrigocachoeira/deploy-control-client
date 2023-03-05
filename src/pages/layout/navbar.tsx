@@ -1,7 +1,7 @@
-import { Fragment } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useRouter } from "next/router";
+import { Fragment } from 'react';
 
 const user = {
   name: 'Rodrigo Cachoeira',
@@ -12,6 +12,7 @@ const user = {
 let navigation = [
   { name: 'Dashboard', href: '/dashboard', current: true },
   { name: 'Boards', href: '/boards', current: false },
+	{ name: 'Report', href: '/report', current: false },
 ]
 const userNavigation = [
   { name: 'Settings', href: '#' },

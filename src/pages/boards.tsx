@@ -1,15 +1,15 @@
 import Navbar from './layout/navbar';
 
-import { Heading } from './components/heading';
-import { useEffect, useState } from "react";
-import { Board } from "../../types/board";
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
+import { useEffect, useState } from "react";
+import { Board } from "../../types/board";
 import { Payload } from '../../types/jwt/payload';
-import { loadJwtTokenInSession } from "../services/auth";
-import { destroy, post } from '../services/http/fetch';
 import { openJwtToken } from "../lib/jwt";
 import { findBoardByUserId } from "../models/board";
+import { loadJwtTokenInSession } from "../services/auth";
+import { destroy, post } from '../services/http/fetch';
+import { Heading } from './components/heading';
 
 const BOARDS = [
     {
@@ -197,7 +197,7 @@ export default function Boards({...data}) {
     }
 
     return (
-		<section className="min-h-full">
+		<section className="h-screen bg-white">
 			<Navbar />
 			<header className="bg-white shadow">
 				<Heading title="Settings" />
@@ -209,7 +209,7 @@ export default function Boards({...data}) {
 				<div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
 					<h6 className="text-lg font-bold dark:text-white">Board</h6>
 
-					<div className="grid grid-cols-2 gap-4 w-1/2 mt-5" >
+					<div className="grid grid-cols-2 gap-4 mt-5" >
 						<div className="grid">
 							<select onChange={handleBoardInput} value={board} className="appearance-none bg-gray-100 text-gray-700 border block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
 								<option value="" >Select Board</option>

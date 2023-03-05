@@ -1,8 +1,8 @@
-import { parseCookies } from 'nookies';
+import { parseCookies }  from 'nookies';
 
 export async function post(context: any, path: string, body: any) {
     const { 'deployControlClient.authToken': token } = parseCookies(context);
-    const BASE_PATH = process.env.JIRA_API;
+    const BASE_PATH = process.env.GITHUB_API;
 
 	const data = await fetch(BASE_PATH + path, {
         method: 'POST',
