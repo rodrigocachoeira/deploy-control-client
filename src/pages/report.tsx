@@ -1,27 +1,80 @@
+import { useState } from 'react';
 import { Issue } from '../../types/issue';
-import { getDeployedIssues } from '../services/jira/issues';
+import { get, post } from '../services/http/fetch';
+import { generateMarkdown } from '../services/markdown/generate';
 import { Heading } from './components/heading';
+import { Loading } from './components/loading';
+
+import { useAlert } from 'react-alert';
+
 
 import Navbar from './layout/navbar';
 
-const issues: Issue[] = [
-  {
-    number: 1,
-    title: 'ANDROMEDA-277'
-  },
-  {
-    number: 2,
-    title: 'ANDROMEDA-255'
-  }
-];
-
 export default function Report({... data }) {
+  const [issues, setIssues] = useState<Issue[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [inputTask, setInputTask] = useState<string>('');
+  const [markdown, setMarkdown] = useState<string>('');
+
+  const alert = useAlert();
 
   async function syncIssues() {
-    getDeployedIssues(undefined, {
-      boardId: 157,
-      boardName: 'ANDROMEDA'
+    setLoading(true);
+    
+    const req = await post(undefined, '/api/issues/deployed/ANDROMEDA', {
+      boardId: 157
     });
+    const json = await req.json();
+
+    setLoading(false);
+    setIssues(json.data.issues);
+  }
+
+  function alreadyExist(title: string) {
+    return issues.filter((issue: Issue) => {
+      return issue.title === title;
+    }).length > 0;
+  }
+
+  async function loadIssue(title: string) {
+    if (alreadyExist(title)) {
+      alert.error('Task já sincronizada!');
+      return;
+    }
+
+    setLoading(true);
+
+    const req = await get(undefined, `/api/issues/${title}`);
+    const json = await req.json();
+
+    setLoading(false);
+    setIssues([... issues, json.data.issue]);
+  }
+
+  function removeIssue(number: number) {
+    const newIssues = issues.filter((issue: Issue) => {
+      return issue.number !== number;
+    });
+
+    setIssues(newIssues);
+  }
+
+  function mountMarkdown() {
+    const markdown = generateMarkdown('Andrômeda', issues);
+
+    navigator.clipboard.writeText(markdown);
+
+    setMarkdown(markdown);
+  }
+
+  function applyDisabledBehaviour(classes: string) {
+    const disabled = ' opacity-50 cursor-not-allowed';
+    
+    if (loading) {
+      return classes + disabled;
+    }
+
+    return classes;
   }
 
   return (
@@ -51,9 +104,14 @@ export default function Report({... data }) {
               </div>
               <div className="grid w-32 h-12">
                 <button
-                  onClick={(e) => syncIssues()}
-                  className="bg-blue-500 mt-7 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                  Sync
+                  disabled={loading}
+                  onClick={() => syncIssues()}
+                  className={applyDisabledBehaviour('bg-blue-500 mt-7 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex')}
+                >
+                  {
+                    loading ? (<Loading/>) : <></> 
+                  }
+                  <span className='w-full' >Sync</span>
                 </button>
               </div>
               <div className="grid">
@@ -64,12 +122,20 @@ export default function Report({... data }) {
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline" 
                   type="text" 
                   placeholder="Task Name"
-                  readOnly
+                  value={inputTask}
+                  onChange={e => setInputTask(e.target.value)}
                 ></input>
               </div>
               <div className="grid w-32 h-12">
-                <button className="bg-blue-500 mt-7 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                  Add
+                <button 
+                  disabled={loading}
+                  onClick={async () => await loadIssue(inputTask)} 
+                  className={applyDisabledBehaviour('bg-blue-500 mt-7 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex')}
+                >
+                  {
+                    loading ? (<Loading/>) : <></> 
+                  }
+                  <span className='w-full' >Add</span>
                 </button>
               </div>
             </div>
@@ -88,7 +154,10 @@ export default function Report({... data }) {
                       <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
                         <tr>
                             <th className="p-2 whitespace-nowrap">
-                                <div className="font-semibold text-left">Name</div>
+                                <div className="font-semibold text-left">Task</div>
+                            </th>
+                            <th className="p-2 whitespace-nowrap">
+                                <div className="font-semibold text-left">Title</div>
                             </th>
                             <th className="p-2 whitespace-nowrap">
                                 <div className="font-semibold text-left">Actions</div>
@@ -107,9 +176,16 @@ export default function Report({... data }) {
                                 </div>
                               </td>
                               <td className="p-2 whitespace-nowrap">
+                                <div className="flex items-center">
+                                    <div className="font-medium text-gray-800">{ issue.summary }</div>
+                                </div>
+                              </td>
+                              <td className="p-2 whitespace-nowrap">
                                 <div className="flex items-left">
-                                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                    X
+                                  <button
+                                    onClick={() => removeIssue(issue.number)}
+                                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                  X
                                   </button>
                                 </div>
                               </td>
@@ -122,7 +198,10 @@ export default function Report({... data }) {
                   </div>
                 </div>
               </div>
-              <button className="bg-purple-500 mt-7 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+              <button
+                onClick={mountMarkdown}
+                className="bg-purple-500 mt-7 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+              >
                 Generate Text
               </button>
             </div>
@@ -133,7 +212,7 @@ export default function Report({... data }) {
             <div className="grid grid-cols-1 gap-4 mt-5" >
               <div className="grid">
                 <p className="block text-gray-700 text-sm font-bold mb-2" >
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam sed, id velit accusantium ratione et quia saepe soluta in placeat libero nisi, quasi perspiciatis recusandae nesciunt, quos quas. Facere, recusandae?
+                { markdown }
                 </p>
               </div>
             </div>

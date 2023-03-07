@@ -15,3 +15,18 @@ export async function post(context: any, path: string, body: any) {
 
     return Promise.resolve(data);
 }
+
+export async function get(context: any, path: string) {
+    const { 'deployControlClient.authToken': token } = parseCookies(context);
+    const BASE_PATH = process.env.JIRA_API;
+
+	const data = await fetch(BASE_PATH + path, {
+        method: 'GET',
+		headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(res => res.json());
+
+    return Promise.resolve(data);
+}

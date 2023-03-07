@@ -1,6 +1,8 @@
 export type Issue = {
   number: number;
   title: string;
+  description?: string;
+  summary?: string;
   type?: string;
   tags?: string[];
   board?: string;
@@ -14,4 +16,9 @@ export type Issue = {
     front: boolean;
     infra: boolean;
   };
+  repositories: string[]
+  epic?: {
+    id: number;
+    title: string;
+  }
 }

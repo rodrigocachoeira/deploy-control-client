@@ -1,5 +1,9 @@
 import { parseCookies } from 'nookies';
 
+export async function get(context: any, path: string) {
+    return await request(path, 'POST', "", getToken(context));
+}
+
 export async function post(context: any, path: string, body: any) {
     return await request(path, 'POST', body, getToken(context));
 }

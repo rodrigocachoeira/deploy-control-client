@@ -3,8 +3,9 @@ import { createContext, useEffect, useState } from "react";
 import Router from 'next/router';
 import { post } from '../../services/http/fetch';
 
-import { login, loadJwtTokenInSession } from '../../services/auth';
 import { Payload } from "../../../types/jwt/payload";
+import { loadJwtTokenInSession, login } from '../../services/auth';
+import { AlertContext } from "./AlertContext";
 
 type User = {
     id: number;
@@ -64,7 +65,9 @@ export function AuthProvider({ children }: any) {
 
   	return (
 		<AuthContext.Provider value={{user, isAuthenticated, signIn}}>
-        	{ children }
+        	<AlertContext>
+                { children }
+            </AlertContext>
       	</AuthContext.Provider>
   	)
 }

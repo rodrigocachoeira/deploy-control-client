@@ -10,9 +10,7 @@ const user = {
     'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/621f649059c0740069d7be99/f1598cf1-d7cc-430f-949a-1f33844268bc/48',
 }
 let navigation = [
-  { name: 'Dashboard', href: '/dashboard', current: true },
-  { name: 'Boards', href: '/boards', current: false },
-	{ name: 'Report', href: '/report', current: false },
+	{ name: 'Report', href: '/report', current: true },
 ]
 const userNavigation = [
   { name: 'Settings', href: '#' },
