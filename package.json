@@ -29,8 +29,6 @@
     "postcss": "^8.4.19",
     "prisma": "^4.6.1",
     "react": "18.2.0",
-    "react-alert": "^7.0.3",
-    "react-alert-template-basic": "^1.0.2",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.39.7",
     "slack-block-builder": "^2.7.2",

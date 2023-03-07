@@ -1,4 +1,4 @@
-import { parseCookies }  from 'nookies';
+import { parseCookies } from 'nookies';
 
 export async function post(context: any, path: string, body: any) {
     const { 'deployControlClient.authToken': token } = parseCookies(context);

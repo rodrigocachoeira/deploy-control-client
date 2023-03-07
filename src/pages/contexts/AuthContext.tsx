@@ -5,7 +5,6 @@ import { post } from '../../services/http/fetch';
 
 import { Payload } from "../../../types/jwt/payload";
 import { loadJwtTokenInSession, login } from '../../services/auth';
-import { AlertContext } from "./AlertContext";
 
 type User = {
     id: number;
@@ -65,9 +64,7 @@ export function AuthProvider({ children }: any) {
 
   	return (
 		<AuthContext.Provider value={{user, isAuthenticated, signIn}}>
-        	<AlertContext>
-                { children }
-            </AlertContext>
+        	{ children }
       	</AuthContext.Provider>
   	)
 }

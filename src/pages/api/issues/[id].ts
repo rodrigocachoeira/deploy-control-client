@@ -20,8 +20,6 @@ export default async function handler(
     issueTitle: id as string
   });
 
-  console.log(jiraIssue);
-
   const issue: Issue = {
     number: jiraIssue.id,
     title: jiraIssue.title,

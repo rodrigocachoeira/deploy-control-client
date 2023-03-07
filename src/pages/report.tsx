@@ -5,9 +5,6 @@ import { generateMarkdown } from '../services/markdown/generate';
 import { Heading } from './components/heading';
 import { Loading } from './components/loading';
 
-import { useAlert } from 'react-alert';
-
-
 import Navbar from './layout/navbar';
 
 export default function Report({... data }) {
@@ -15,8 +12,6 @@ export default function Report({... data }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [inputTask, setInputTask] = useState<string>('');
   const [markdown, setMarkdown] = useState<string>('');
-
-  const alert = useAlert();
 
   async function syncIssues() {
     setLoading(true);
@@ -38,7 +33,7 @@ export default function Report({... data }) {
 
   async function loadIssue(title: string) {
     if (alreadyExist(title)) {
-      alert.error('Task já sincronizada!');
+      alert('Task já sincronizada!');
       return;
     }
 
