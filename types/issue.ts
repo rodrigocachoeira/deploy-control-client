@@ -1,5 +1,5 @@
 export type Issue = {
-  number: number;
+  number?: number;
   title: string;
   description?: string;
   summary?: string;
