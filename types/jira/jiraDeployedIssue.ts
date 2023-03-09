@@ -9,5 +9,9 @@ export type JiraDeployedIssue = {
     name: string;
     image: string;
   };
-  repositories: string[];
+  repositories: string[],
+  epic?: {
+    id: number;
+    title: string;
+  }
 };
