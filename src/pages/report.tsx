@@ -178,7 +178,7 @@ export default function Report({... data }) {
                               <td className="p-2 whitespace-nowrap">
                                 <div className="flex items-left">
                                   <button
-                                    onClick={() => removeIssue(issue.number)}
+                                    onClick={() => removeIssue(issue.number ?? 0)}
                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                   X
                                   </button>
