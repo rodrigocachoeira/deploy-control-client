@@ -1,5 +1,5 @@
-import { prisma } from "../lib/prisma";
 import { Issue } from '../../types/models/issue';
+import { prisma } from "../lib/prisma";
 
 export async function createOrUpdateIssue(issue: Issue) {
     if (! issue.id) {
@@ -22,13 +22,19 @@ export async function findIssue(issueId: number) {
 }
 
 export async function createIssue(issue: Issue) {
-    issue.createdAt = new Date();
-    issue.updatedAt = new Date();
 
     return await prisma.issue.create({
 		data: {
-            ... issue,
-		}
+            id: issue.id,
+            title: issue.title,
+            description: issue.description,
+            priority: issue.priority,
+            assigneeName: issue.assigneeImage,
+            assigneeImage: issue.assigneeImage,
+            sprintId: issue.sprintId ?? 1,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        }
     });
 }
 
