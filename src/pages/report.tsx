@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Issue } from '../../types/issue';
 import { get, post } from '../services/http/fetch';
 import { generateMarkdown } from '../services/markdown/generate';
-import { Heading } from './components/heading';
-import { Loading } from './components/loading';
+import Heading from './components/heading';
+import Loading from './components/loading';
 
 import Navbar from './layout/navbar';
 

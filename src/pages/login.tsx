@@ -5,7 +5,7 @@ import { AuthContext } from "./contexts/AuthContext";
 
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
-import { Alert } from './components/alert';
+import Alert from './components/alert';
 
 export default function Login() {
   const [showError, setShowError] = useState<boolean>(false);
