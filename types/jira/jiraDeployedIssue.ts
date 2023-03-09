@@ -1,4 +1,4 @@
-export type DeployedIssue = {
+export type JiraDeployedIssue = {
   id: number;
   title: string;
   summary: string;
