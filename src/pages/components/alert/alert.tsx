@@ -1,6 +1,6 @@
 import { AlertProps } from "./types";
 
-export function Alert(props: AlertProps) {
+export default function Alert(props: AlertProps) {
 
     function getAlertBg(type: string) {
         const defaultClasses = 'mb-10 border-t-4 rounded-b text-teal-900 px-4 py-3 shadow-md w-5/12';

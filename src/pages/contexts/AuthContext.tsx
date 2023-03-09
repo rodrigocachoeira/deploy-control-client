@@ -24,7 +24,7 @@ type AuthContextType = {
 
 export const AuthContext = createContext({} as AuthContextType);
 
-export function AuthProvider({ children }: any) {
+export default function AuthProvider({ children }: any) {
     const [user, setUser] = useState<Payload | null>(null);
 	const isAuthenticated = !! user;
 
