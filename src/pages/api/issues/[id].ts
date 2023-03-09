@@ -1,7 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Issue } from '../../../../../types/issue';
-import { JiraDeployedIssue } from '../../../../../types/jira/jiraDeployedIssue';
-import { getDeployedIssues } from '../../../../services/jira/issues';
+import { Issue } from '../../../../types/issue';
 import { getIssue } from '../../../services/jira/issues';
 
 type Data = {
